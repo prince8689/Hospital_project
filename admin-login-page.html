@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Smart Queue System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: url('/api/placeholder/1920/1080') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(103,58,183,0.85) 0%, rgba(126,87,194,0.85) 100%);
+            z-index: -1;
+        }
+        
+        .login-container {
+            background-color: white;
+            width: 400px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        
+        .login-header {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+        }
+        
+        .login-header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .login-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .login-form {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            border-color: #9b59b6;
+            outline: none;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            margin: 10px 0 20px;
+        }
+        
+        .remember-me input {
+            margin-right: 8px;
+        }
+        
+        .remember-me label {
+            font-size: 14px;
+            color: #555;
+        }
+        
+        .login-btn {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .login-btn:hover {
+            background: linear-gradient(135deg, #8e44ad 0%, #7d3c98 100%);
+            box-shadow: 0 5px 15px rgba(155, 89, 182, 0.4);
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .back-to-home {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .back-to-home a {
+            color: #9b59b6;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+        
+        .back-to-home a:hover {
+            color: #8e44ad;
+            text-decoration: underline;
+        }
+        
+        .secure-info {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .secure-info svg {
+            width: 14px;
+            height: 14px;
+            margin-right: 5px;
+            color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Admin Dashboard Login</h1>
+            <p>Smart Queue System Administration</p>
+        </div>
+        
+        <div class="login-form">
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="Enter your email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+                
+                <div class="remember-me">
+                    <input type="checkbox" id="remember">
+                    <label for="remember">Remember me</label>
+                </div>
+                
+                <button type="submit" class="login-btn"><a href="admin-dashboard-html.html"> Login to Dashboard</a></button>
+                
+                <div id="errorMessage" class="error-message">
+                    Invalid email or password. Please try again.
+                </div>
+            </form>
+            
+            <div class="back-to-home">
+                <a href="login_all.html">← Back to Main Login Page</a>
+            </div>
+            
+            <div class="secure-info">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                Secure Login | Hospital Management System
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Handle form submission
+        document.getElementById('adminLoginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Check if credentials match the required ones
+            if (email === 'princemaur7@gmail.com' && password === 'Prince@123') {
+                // If match, redirect to admin dashboard (you can change this URL)
+                window.location.href = 'admin_dashboard.html';
+            } else {
+                // If not match, show error message
+                errorMessage.style.display = 'block';
+                
+                // Clear password field
+                document.getElementById('password').value = '';
+            }
+        });
+    </script>
+</body>
+</html>

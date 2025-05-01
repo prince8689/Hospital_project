@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <style>
+    /* Reset and base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f5f5f5;
+      color: #333;
+    }
+
+    /* Header styles */
+    header {
+      background-color: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 1rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #3b82f6;
+    }
+
+    .search-bar {
+      position: relative;
+      margin-right: 1rem;
+    }
+
+    .search-bar input {
+      padding: 0.5rem 1rem 0.5rem 2.5rem;
+      border: 1px solid #ddd;
+      border-radius: 0.5rem;
+      width: 250px;
+      outline: none;
+    }
+
+    .search-bar input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+    }
+
+    .search-bar i {
+      position: absolute;
+      left: 0.8rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9ca3af;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      background-color: #3b82f6;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    /* Added logout button style */
+    .logout-btn {
+      background-color: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .logout-btn:hover {
+      background-color: #dc2626;
+    }
+
+    /* Main content styles */
+    main {
+      padding: 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .tab {
+      padding: 0.5rem 1rem;
+      background-color: white;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #4b5563;
+    }
+
+    .tab.active {
+      background-color: #3b82f6;
+      color: white;
+    }
+
+    .tab-badge {
+      background-color: #ef4444;
+      color: white;
+      font-size: 0.75rem;
+      padding: 0.125rem 0.5rem;
+      border-radius: 9999px;
+    }
+
+    .content-card {
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      padding: 1.5rem;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+    }
+
+    .btn-primary {
+      background-color: #3b82f6;
+      color: white;
+    }
+
+    .btn-success {
+      background-color: #10b981;
+      color: white;
+    }
+
+    .btn-danger {
+      background-color: #ef4444;
+      color: white;
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid #d1d5db;
+      color: #4b5563;
+    }
+
+    /* Table styles */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead tr {
+      background-color: #f3f4f6;
+      color: #4b5563;
+      text-transform: uppercase;
+      font-size: 0.875rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1.5rem;
+      text-align: left;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    tbody tr:hover {
+      background-color: #f9fafb;
+    }
+
+    .status-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+    }
+
+    .status-active {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+
+    .status-pending {
+      background-color: #fef3c7;
+      color: #92400e;
+    }
+
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .view-btn {
+      color: #3b82f6;
+    }
+
+    .view-btn:hover {
+      color: #2563eb;
+    }
+
+    .edit-btn {
+      color: #f59e0b;
+    }
+
+    .edit-btn:hover {
+      color: #d97706;
+    }
+
+    .delete-btn {
+      color: #ef4444;
+    }
+
+    .delete-btn:hover {
+      color: #dc2626;
+    }
+
+    .accept-btn {
+      color: #10b981;
+    }
+
+    .accept-btn:hover {
+      color: #059669;
+    }
+
+    .reject-btn {
+      color: #ef4444;
+    }
+
+    .reject-btn:hover {
+      color: #dc2626;
+    }
+
+    /* Modal styles */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 1000;
+    }
+
+    .modal {
+      background-color: white;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      max-width: 700px;
+      width: 100%;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      color: #6b7280;
+      cursor: pointer;
+    }
+
+    .modal-close:hover {
+      color: #4b5563;
+    }
+
+    .modal-details {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .detail-item {
+      margin-bottom: 0.5rem;
+    }
+
+    .detail-label {
+      font-size: 0.875rem;
+      color: #6b7280;
+      margin-bottom: 0.25rem;
+    }
+
+    .detail-value {
+      font-weight: 500;
+    }
+
+    .documents-section {
+      grid-column: span 2;
+    }
+
+    .documents-container {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .document-item {
+      border: 1px solid #e5e7eb;
+      padding: 0.5rem;
+      border-radius: 0.25rem;
+    }
+
+    .document-type {
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+
+    .document-link {
+      color: #3b82f6;
+      font-size: 0.875rem;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 1rem;
+      color: #6b7280;
+    }
+
+    /* Hidden element */
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">Admin Dashboard</div>
+        <div class="user-info">
+          <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search...">
+          </div>
+          <span class="user-name">Admin</span>
+          <div class="avatar">A</div>
+          <!-- Added logout button -->
+          <button class="logout-btn" id="logoutBtn"onclick="adminLogout()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" data-tab="doctors">
+        <i class="fas fa-user-md"></i>
+        <span>Doctors</span>
+      </button>
+      <button class="tab" data-tab="staff">
+        <i class="fas fa-users"></i>
+        <span>Staff</span>
+      </button>
+      <button class="tab" data-tab="requests">
+        <i class="fas fa-user-plus"></i>
+        <span>Doctor Requests</span>
+        <span class="tab-badge" id="requestCount">3</span>
+      </button>
+    </div>
+
+    <!-- Content Cards -->
+    <div class="content-card">
+      <!-- Doctors Section -->
+      <div id="doctorsSection" class="tab-content">
+        <div class="card-header">
+          <h2 class="card-title">Doctors List</h2>
+          <button class="btn btn-primary">
+            <i class="fas fa-user-plus"></i>
+            <span>Add Doctor</span>
+          </button>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Specialization</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="doctorsTableBody">
+              <!-- Table rows will be populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Staff Section -->
+      <div id="staffSection" class="tab-content hidden">
+        <div class="card-header">
+          <h2 class="card-title">Staff List</h2>
+          <button class="btn btn-primary">
+            <i class="fas fa-user-plus"></i>
+            <span>Add Staff</span>
+          </button>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="staffTableBody">
+              <!-- Table rows will be populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Doctor Requests Section -->
+      <div id="requestsSection" class="tab-content hidden">
+        <div class="card-header">
+          <h2 class="card-title">Doctor Verification Requests</h2>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Specialization</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="requestsTableBody">
+              <!-- Table rows will be populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal for viewing doctor request details -->
+  <div class="modal-backdrop" id="requestModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Doctor Request Details</h3>
+        <button class="modal-close" id="closeModal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-details" id="modalDetails">
+        <!-- Doctor details will be populated by JavaScript -->
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" id="modalClose">Close</button>
+        <button class="btn btn-danger" id="modalReject">
+          <i class="fas fa-times-circle"></i>
+          <span>Reject</span>
+        </button>
+        <button class="btn btn-success" id="modalAccept">
+          <i class="fas fa-check-circle"></i>
+          <span>Accept</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+   
+    // Mock data
+    let doctors = [
+      { id: 1, name: "Dr. Sunil Gupta", specialization: "Dermatologist", status: "active", phone: "9988776655", email: "sunil.gupta@example.com" },
+      { id: 2, name: "Dr. Meena Patel", specialization: "Gynecologist", status: "active", phone: "8877665544", email: "meena.patel@example.com" },
+    ];
+
+    let staff = [
+      { id: 1, name: "Rahul Singh", role: "Nurse", status: "active", phone: "7766554433", email: "rahul.singh@example.com" },
+      { id: 2, name: "Anjali Desai", role: "Receptionist", status: "active", phone: "6655443322", email: "anjali.desai@example.com" },
+    ];
+
+    let doctorRequests = [
+      { id: 1, name: "Dr. Amit Kumar", specialization: "Cardiologist", status: "pending", phone: "9876543210", email: "amit.kumar@example.com" },
+      { id: 2, name: "Dr. Priya Sharma", specialization: "Neurologist", status: "pending", phone: "8765432109", email: "priya.sharma@example.com" },
+      { id: 3, name: "Dr. Rajesh Verma", specialization: "Orthopedic", status: "pending", phone: "7654321098", email: "rajesh.verma@example.com" },
+    ];
+
+    // DOM elements
+    const tabButtons = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const searchInput = document.getElementById('searchInput');
+    const doctorsTableBody = document.getElementById('doctorsTableBody');
+    const staffTableBody = document.getElementById('staffTableBody');
+    const requestsTableBody = document.getElementById('requestsTableBody');
+    const requestModal = document.getElementById('requestModal');
+    const closeModal = document.getElementById('closeModal');
+    const modalClose = document.getElementById('modalClose');
+    const modalAccept = document.getElementById('modalAccept');
+    const modalReject = document.getElementById('modalReject');
+    const modalDetails = document.getElementById('modalDetails');
+    const requestCount = document.getElementById('requestCount');
+    const logoutBtn = document.getElementById('logoutBtn'); // Added logout button reference
+
+    // Current selected request for modal
+    let selectedRequest = null;
+
+    // Initialize data
+    function init() {
+      renderDoctors(doctors);
+      renderStaff(staff);
+      renderRequests(doctorRequests);
+      updateRequestCount();
+    }
+
+    // Tab switching
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // Remove active class from all tabs
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        tabContents.forEach(content => content.classList.add('hidden'));
+        
+        // Add active class to clicked tab
+        button.classList.add('active');
+        
+        // Show corresponding content
+        const tabName = button.getAttribute('data-tab');
+        document.getElementById(`${tabName}Section`).classList.remove('hidden');
+      });
+    });
+
+    // Search functionality
+    searchInput.addEventListener('input', () => {
+      const searchTerm = searchInput.value.toLowerCase();
+      
+      // Filter doctors
+      const filteredDoctors = doctors.filter(doctor => 
+        doctor.name.toLowerCase().includes(searchTerm) || 
+        doctor.specialization.toLowerCase().includes(searchTerm)
+      );
+      renderDoctors(filteredDoctors);
+      
+      // Filter staff
+      const filteredStaff = staff.filter(s => 
+        s.name.toLowerCase().includes(searchTerm) || 
+        s.role.toLowerCase().includes(searchTerm)
+      );
+      renderStaff(filteredStaff);
+      
+      // Filter requests
+      const filteredRequests = doctorRequests.filter(req => 
+        req.name.toLowerCase().includes(searchTerm) || 
+        req.specialization.toLowerCase().includes(searchTerm)
+      );
+      renderRequests(filteredRequests);
+    });
+
+    // Render doctors table
+    function renderDoctors(doctorsArr) {
+      doctorsTableBody.innerHTML = '';
+      
+      if (doctorsArr.length === 0) {
+        doctorsTableBody.innerHTML = `
+          <tr>
+            <td colspan="6" class="empty-state">No doctors found</td>
+          </tr>
+        `;
+        return;
+      }
+      
+      doctorsArr.forEach(doctor => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${doctor.name}</td>
+          <td>${doctor.specialization}</td>
+          <td>${doctor.email}</td>
+          <td>${doctor.phone}</td>
+          <td>
+            <span class="status-badge status-active">${doctor.status}</span>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button class="action-btn view-btn">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button class="action-btn edit-btn">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="action-btn delete-btn" data-id="${doctor.id}">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        
+        // Add event listener for delete
+        tr.querySelector('.delete-btn').addEventListener('click', (e) => {
+          const doctorId = parseInt(e.currentTarget.getAttribute('data-id'));
+          removeDoctor(doctorId);
+        });
+        
+        doctorsTableBody.appendChild(tr);
+      });
+    }
+
+    // Render staff table
+    function renderStaff(staffArr) {
+      staffTableBody.innerHTML = '';
+      
+      if (staffArr.length === 0) {
+        staffTableBody.innerHTML = `
+          <tr>
+            <td colspan="6" class="empty-state">No staff found</td>
+          </tr>
+        `;
+        return;
+      }
+      
+      staffArr.forEach(staffMember => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${staffMember.name}</td>
+          <td>${staffMember.role}</td>
+          <td>${staffMember.email}</td>
+          <td>${staffMember.phone}</td>
+          <td>
+            <span class="status-badge status-active">${staffMember.status}</span>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button class="action-btn view-btn">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button class="action-btn edit-btn">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="action-btn delete-btn" data-id="${staffMember.id}">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        
+        // Add event listener for delete
+        tr.querySelector('.delete-btn').addEventListener('click', (e) => {
+          const staffId = parseInt(e.currentTarget.getAttribute('data-id'));
+          removeStaff(staffId);
+        });
+        
+        staffTableBody.appendChild(tr);
+      });
+    }
+
+    // Render requests table
+    function renderRequests(requestsArr) {
+      requestsTableBody.innerHTML = '';
+      
+      if (requestsArr.length === 0) {
+        requestsTableBody.innerHTML = `
+          <tr>
+            <td colspan="6" class="empty-state">No pending requests</td>
+          </tr>
+        `;
+        return;
+      }
+      
+      requestsArr.forEach(request => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${request.name}</td>
+          <td>${request.specialization}</td>
+          <td>${request.email}</td>
+          <td>${request.phone}</td>
+          <td>
+            <span class="status-badge status-pending">${request.status}</span>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button class="action-btn view-btn" data-id="${request.id}">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button class="action-btn accept-btn" data-id="${request.id}">
+                <i class="fas fa-check-circle"></i>
+              </button>
+              <button class="action-btn reject-btn" data-id="${request.id}">
+                <i class="fas fa-times-circle"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        
+        // Add event listeners
+        tr.querySelector('.view-btn').addEventListener('click', (e) => {
+          const requestId = parseInt(e.currentTarget.getAttribute('data-id'));
+          openRequestModal(requestId);
+        });
+        
+        tr.querySelector('.accept-btn').addEventListener('click', (e) => {
+          const requestId = parseInt(e.currentTarget.getAttribute('data-id'));
+          acceptRequest(requestId);
+        });
+        
+        tr.querySelector('.reject-btn').addEventListener('click', (e) => {
+          const requestId = parseInt(e.currentTarget.getAttribute('data-id'));
+          rejectRequest(requestId);
+        });
+        
+        requestsTableBody.appendChild(tr);
+      });
+    }
+
+    // Remove doctor
+    function removeDoctor(id) {
+      doctors = doctors.filter(doctor => doctor.id !== id);
+      renderDoctors(doctors);
+    }
+
+    // Remove staff
+    function removeStaff(id) {
+      staff = staff.filter(s => s.id !== id);
+      renderStaff(staff);
+    }
+
+    // Accept doctor request
+    function acceptRequest(id) {
+      const request = doctorRequests.find(req => req.id === id);
+      if (request) {
+        doctors.push({...request, status: 'active'});
+        doctorRequests = doctorRequests.filter(req => req.id !== id);
+        
+        renderDoctors(doctors);
+        renderRequests(doctorRequests);
+        updateRequestCount();
+      }
+    }
+
+    // Reject doctor request
+    function rejectRequest(id) {
+      doctorRequests = doctorRequests.filter(req => req.id !== id);
+      renderRequests(doctorRequests);
+      updateRequestCount();
+    }
+
+    // Open request modal
+    function openRequestModal(id) {
+      selectedRequest = doctorRequests.find(req => req.id === id);
+      if (selectedRequest) {
+        modalDetails.innerHTML = `
+          <div class="detail-item">
+            <p class="detail-label">Name</p>
+            <p class="detail-value">${selectedRequest.name}</p>
+          </div>
+          <div class="detail-item">
+            <p class="detail-label">Specialization</p>
+            <p class="detail-value">${selectedRequest.specialization}</p>
+          </div>
+          <div class="detail-item">
+            <p class="detail-label">Email</p>
+            <p class="detail-value">${selectedRequest.email}</p>
+          </div>
+          <div class="detail-item">
+            <p class="detail-label">Phone</p>
+            <p class="detail-value">${selectedRequest.phone}</p>
+          </div>
+          <div class="documents-section">
+            <p class="detail-label">Documents</p>
+            <div class="documents-container">
+              <div class="document-item">
+                <p class="document-type">Medical License</p>
+                <a href="#" class="document-link">View Document</a>
+              </div>
+              <div class="document-item">
+                <p class="document-type">ID Proof</p>
+                <a href="#" class="document-link">View Document</a>
+              </div>
+              <div class="document-item">
+                <p class="document-type">Qualification Certificates</p>
+                <a href="#" class="document-link">View Document</a>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        requestModal.style.display = 'flex';
+      }
+    }
+
+    // Update request count badge
+    function updateRequestCount() {
+      requestCount.textContent = doctorRequests.length;
+    }
+
+    // Close modal events
+    closeModal.addEventListener('click', () => {
+      requestModal.style.display = 'none';
+    });
+    
+    modalClose.addEventListener('click', () => {
+      requestModal.style.display = 'none';
+    });
+
+    // Modal accept and reject
+    modalAccept.addEventListener('click', () => {
+      if (selectedRequest) {
+        acceptRequest(selectedRequest.id);
+        requestModal.style.display = 'none';
+      }
+    });
+    
+    modalReject.addEventListener('click', () => {
+      if (selectedRequest) {
+        rejectRequest(selectedRequest.id);
+        requestModal.style.display = 'none';
+      }
+    });
+    // Check if admin is logged in
+  // if (localStorage.getItem("adminLoggedIn") !== "true") {
+  //   // Not logged in, go back to login page
+  //   window.location.href = "admin-login-page.html";
+  // }
+
+  // Block back navigation
+  history.pushState(null, null, location.href);
+  window.onpopstate = function () {
+    history.go(1);
+  };
+    // Logout functionality
+    logoutBtn.addEventListener('click', () => {
+      // Redirect to landing.html
+      window.location.href = 'landing.html';
+    });
+
+    // Initialize the app
+    init();
+  </script>
+</body>
+</html>

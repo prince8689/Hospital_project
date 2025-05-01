@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Appointment</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+            position: relative;
+        }
+        h2 {
+            color: #dc3545;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background: #dc3545;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #c82333;
+        }
+        #confirmation {
+            color: green;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p id="confirmation"></p>
+        <h2>Emergency Appointment</h2>
+        <form id="appointmentForm">
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" placeholder="Enter your full name" required>
+
+            <label for="mobile">Mobile Number:</label>
+            <input type="text" id="mobile" placeholder="Enter your mobile number" required>
+
+            <label for="hospital">Nearest Hospital:</label>
+            <select id="hospital" required>
+                <option value="">--Choose a Hospital--</option>
+            </select>
+
+            <label for="emergency">Emergency Type:</label>
+            <select id="emergency" required>
+                <option value="">--Select Emergency--</option>
+                <option value="Heart Attack">Heart Attack</option>
+                <option value="Accident">Accident</option>
+                <option value="Stroke">Stroke</option>
+                <option value="Other">Other</option>
+            </select>
+
+            <label for="ambulance">Ambulance Required:</label>
+            <select id="ambulance" required>
+                <option value="">--Select--</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+
+            <label for="message">Additional Details:</label>
+            <textarea id="message" placeholder="Describe the emergency (optional)"></textarea>
+
+            <button type="submit">Request Emergency Help</button>
+        </form>
+    </div>
+
+    <script>
+        let lat, lon;
+        let locationFetched = false; // Flag to check if location has been fetched
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            // Haversine formula to calculate distance between two points
+            const R = 6371; // Radius of the earth in km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            const distance = R * c; // Distance in km
+            return distance;
+        }
+
+        function fetchHospitals() {
+            if (lat && lon) {
+                // Reduced radius to 2000 meters (2km) to find closer hospitals
+                fetch(`https://overpass-api.de/api/interpreter?data=[out:json];node[amenity=hospital](around:2000,${lat},${lon});out;`)
+                    .then(response => response.json())
+                    .then(data => {
+                        let hospitalSelect = document.getElementById("hospital");
+                        hospitalSelect.innerHTML = "<option value=''>--Choose a Hospital--</option>";
+                        
+                        // Array to hold hospitals with calculated distances
+                        let hospitals = [];
+                        
+                        data.elements.forEach(hospital => {
+                            let name = hospital.tags.name || "Unknown Hospital";
+                            let address = hospital.tags["addr:full"] || "Address not available";
+                            let contact = hospital.tags["contact:phone"] || "No contact available";
+                            
+                            // Calculate distance in km
+                            let distance = calculateDistance(lat, lon, hospital.lat, hospital.lon);
+                            
+                            hospitals.push({
+                                name: name,
+                                address: address,
+                                contact: contact,
+                                distance: distance
+                            });
+                        });
+                        
+                        // Sort hospitals by distance (closest first)
+                        hospitals.sort((a, b) => a.distance - b.distance);
+                        
+                        // Add hospitals to dropdown
+                        hospitals.forEach(hospital => {
+                            let option = document.createElement("option");
+                            option.value = hospital.name;
+                            option.textContent = `${hospital.name} - ${(hospital.distance).toFixed(1)}km (${hospital.contact})`;
+                            hospitalSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error("Error fetching hospitals:", error));
+            } else {
+                alert("Unable to fetch hospitals. Please allow location access.");
+            }
+        }
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    lat = position.coords.latitude;
+                    lon = position.coords.longitude;
+                    locationFetched = true; // Set the flag to true after fetching location
+                    fetchHospitals(); // Fetch hospitals after getting the location
+                }, error => {
+                    console.error("Geolocation error:", error);
+                    alert("Unable to retrieve your location. Please check your location settings.");
+                });
+            } else {
+                alert("Geolocation is not supported by your browser.");
+            }
+        }
+
+        // Add event listener to the hospital dropdown
+        document.getElementById("hospital").addEventListener("click", function() {
+            if (!locationFetched) {
+                getLocation(); // Request location when the dropdown is clicked
+            }
+        });
+
+        document.getElementById("appointmentForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const ambulanceRequired = document.getElementById("ambulance").value;
+            document.getElementById("confirmation").textContent = `Emergency Appointment Booked! Ambulance Required: ${ambulanceRequired}`;
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

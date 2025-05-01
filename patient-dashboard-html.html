@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard | Hospital Management System</title>
+    <link rel="stylesheet" href="patient-dashboard-css.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header>
+            <div class="logo">
+                <i class="fas fa-hospital"></i>
+                <h1>Hospital Management System</h1>
+            </div>
+            <div class="user-info">
+                <div class="profile-pic">
+                    <img src="/api/placeholder/64/64" alt="Profile Picture">
+                </div>
+                <span id="patient-name">Rahul Sharma</span>
+                <button class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </header>
+
+        <!-- Main Content Section -->
+        <main>
+            <!-- Navigation Sidebar -->
+            <nav class="sidebar">
+                <ul>
+                    <li class="active"><a href="#dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="#profile"><i class="fas fa-user"></i> Profile</a></li>
+                    <li><a href="#appointments"><i class="fas fa-calendar-check"></i> Appointments</a></li>
+                    <li><a href="#medical-records"><i class="fas fa-file-medical"></i> Medical Records</a></li>
+                    <li><a href="#feedback"><i class="fas fa-comment"></i> Feedback</a></li>
+                    <li><a href="#resources"><i class="fas fa-book-medical"></i> Health Resources</a></li>
+                </ul>
+            </nav>
+
+            <!-- Dashboard Content -->
+            <div class="content">
+                <!-- Welcome Section -->
+                <div class="welcome-section">
+                    <h2>Welcome, <span id="welcome-name">Rahul</span>!</h2>
+                    <p>आज की तारीख: <span id="current-date"></span></p>
+                </div>
+
+                <!-- Appointment Status -->
+                <div class="card waiting-status">
+                    <h3>Real-Time Waiting Status</h3>
+                    <div class="status-info">
+                        <p>Current Status: <span class="status-badge in-queue">In Queue</span></p>
+                        <p>Estimated Wait Time: <span id="wait-time">15</span> minutes</p>
+                        <p>Your Position: <span id="queue-position">3</span> in queue</p>
+                        <div class="progress-bar">
+                            <div class="progress" id="wait-progress"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Appointments Section -->
+                <div class="card upcoming-appointments">
+                    <div class="card-header">
+                        <h3>Upcoming Appointments</h3>
+                        <button class="primary-btn" id="book-appointment-btn">Book Appointment</button>
+                    </div>
+                    <div class="appointments-list">
+                        <div class="appointment-item">
+                            <div class="appointment-info">
+                                <h4>Dr. Priya Sharma - Cardiology</h4>
+                                <p><i class="fas fa-calendar"></i> 02 April, 2025</p>
+                                <p><i class="fas fa-clock"></i> 10:30 AM</p>
+                                <p><i class="fas fa-map-marker-alt"></i> Room 302, 3rd Floor</p>
+                            </div>
+                            <div class="appointment-actions">
+                                <button class="secondary-btn cancel-btn">Cancel</button>
+                                <button class="secondary-btn reschedule-btn">Reschedule</button>
+                            </div>
+                        </div>
+                        <div class="appointment-item">
+                            <div class="appointment-info">
+                                <h4>Dr. Vikram Patel - Orthopedics</h4>
+                                <p><i class="fas fa-calendar"></i> 10 April, 2025</p>
+                                <p><i class="fas fa-clock"></i> 2:15 PM</p>
+                                <p><i class="fas fa-map-marker-alt"></i> Room 205, 2nd Floor</p>
+                            </div>
+                            <div class="appointment-actions">
+                                <button class="secondary-btn cancel-btn">Cancel</button>
+                                <button class="secondary-btn reschedule-btn">Reschedule</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="two-column">
+                    <!-- Medical Records Preview -->
+                    <div class="card medical-records-preview">
+                        <h3>Recent Medical Records</h3>
+                        <div class="records-list">
+                            <div class="record-item">
+                                <div class="record-icon"><i class="fas fa-file-prescription"></i></div>
+                                <div class="record-details">
+                                    <h4>Blood Test Results</h4>
+                                    <p>Dr. Priya Sharma - 15 March, 2025</p>
+                                </div>
+                                <button class="view-btn">View</button>
+                            </div>
+                            <div class="record-item">
+                                <div class="record-icon"><i class="fas fa-x-ray"></i></div>
+                                <div class="record-details">
+                                    <h4>X-Ray Report</h4>
+                                    <p>Dr. Vikram Patel - 10 March, 2025</p>
+                                </div>
+                                <button class="view-btn">View</button>
+                            </div>
+                        </div>
+                        <a href="#medical-records" class="view-all">View All Records</a>
+                    </div>
+
+                    <!-- Notifications Section -->
+                    <div class="card notifications">
+                        <h3>Notifications & Reminders</h3>
+                        <div class="notification-list">
+                            <div class="notification-item">
+                                <div class="notification-icon reminder"><i class="fas fa-bell"></i></div>
+                                <div class="notification-content">
+                                    <p>Appointment reminder with Dr. Priya Sharma tomorrow at 10:30 AM</p>
+                                    <span class="notification-time">1 hour ago</span>
+                                </div>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-icon medication"><i class="fas fa-pills"></i></div>
+                                <div class="notification-content">
+                                    <p>Remember to take your medication at 8:00 PM</p>
+                                    <span class="notification-time">3 hours ago</span>
+                                </div>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-icon info"><i class="fas fa-info-circle"></i></div>
+                                <div class="notification-content">
+                                    <p>Free health check-up camp on 5th April at Main Hospital Campus</p>
+                                    <span class="notification-time">1 day ago</span>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Health Resources Section -->
+                <div class="card health-resources">
+                    <h3>Health Resources</h3>
+                    <div class="resources-list">
+                        <div class="resource-item">
+                            <div class="resource-icon"><i class="fas fa-heartbeat"></i></div>
+                            <div class="resource-content">
+                                <h4>Heart Health Tips</h4>
+                                <p>Learn how to maintain a healthy heart with these simple lifestyle changes.</p>
+                            </div>
+                            <button class="read-more-btn">Read More</button>
+                        </div>
+                        <div class="resource-item">
+                            <div class="resource-icon"><i class="fas fa-virus"></i></div>
+                            <div class="resource-content">
+                                <h4>Seasonal Flu Prevention</h4>
+                                <p>Protect yourself and your family from seasonal flu with these preventive measures.</p>
+                            </div>
+                            <button class="read-more-btn">Read More</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for Booking Appointment -->
+    <div class="modal" id="appointment-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Book New Appointment</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="appointment-form">
+                    <div class="form-group">
+                        <label for="department">Department</label>
+                        <select id="department" required>
+                            <option value="">Select Department</option>
+                            <option value="cardiology">Cardiology</option>
+                            <option value="orthopedics">Orthopedics</option>
+                            <option value="neurology">Neurology</option>
+                            <option value="pediatrics">Pediatrics</option>
+                            <option value="dermatology">Dermatology</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="doctor">Doctor</label>
+                        <select id="doctor" required disabled>
+                            <option value="">Select Doctor</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="appointment-date">Date</label>
+                        <input type="date" id="appointment-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="appointment-time">Time</label>
+                        <select id="appointment-time" required disabled>
+                            <option value="">Select Time</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="appointment-reason">Reason for Visit</label>
+                        <textarea id="appointment-reason" rows="3" placeholder="Briefly describe your symptoms or reason for the appointment"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="secondary-btn" id="cancel-appointment-btn">Cancel</button>
+                        <button type="submit" class="primary-btn">Confirm Booking</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="modal" id="profile-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Profile</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="profile-form">
+                    <div class="profile-picture-section">
+                        <div class="profile-picture">
+                            <img src="/api/placeholder/100/100" alt="Profile Picture">
+                        </div>
+                        <button type="button" class="secondary-btn">Change Photo</button>
+                    </div>
+                    <div class="two-column-form">
+                        <div class="form-group">
+                            <label for="first-name">First Name</label>
+                            <input type="text" id="first-name" value="prince" required>
+                            <p id="error-message" class="error"></p>
+                        </div>
+                        <div class="form-group">
+                            <label for="last-name">Last Name</label>
+                            <input type="text" id="last-name" value="maurya" required>
+                        </div>
+                    </div>
+                    <div class="two-column-form">
+                        <div class="form-group">
+                            <label for="dob">Date of Birth</label>
+                            <input type="date" id="dob" value="1985-06-15" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="gender">Gender</label>
+                            <select id="gender" required>
+                                <option value="male" selected>Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" value="9876543210" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" value="rahul.sharma@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <textarea id="address" rows="3" required>123, Green Avenue, New Delhi - 110001</textarea>
+                    </div>
+                    <div class="form-group">
+                        <h3>Emergency Contact</h3>
+                    </div>
+                    <div class="two-column-form">
+                        <div class="form-group">
+                            <label for="emergency-name">Name</label>
+                            <input type="text" id="emergency-name" value="Neha Sharma" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="emergency-relation">Relationship</label>
+                            <input type="text" id="emergency-relation" value="Wife" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="emergency-phone">Phone Number</label>
+                        <input type="tel" id="emergency-phone" value="9876543211" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="secondary-btn">Cancel</button>
+                        <button type="submit" class="primary-btn">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="patient-dashboard-script.js"></script>
+</body>
+</html>
