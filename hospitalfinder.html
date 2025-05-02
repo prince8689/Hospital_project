@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Route & Distance Finder</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR API KEY&libraries=places"></script>
+    <style>
+      #map {
+        height: 400px;
+        width: 100%;
+      }
+      input[type="text"] {
+        width: 300px;
+        padding: 10px;
+        font-size: 16px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+      input[type="text"]:focus {
+        outline: none;
+        border-color: #4CAF50;
+      }
+      #hospital-list {
+        margin-top: 20px;
+      }
+      #hospital-list li {
+        padding: 10px;
+        border: 1px solid #ddd;
+        margin-bottom: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Route Finder</h2>
+    <label>Source:</label>
+    <input id="source" type="text" placeholder="Enter Source" />
+    <br><br>
+    <label>Destination:</label>
+    <input id="destination" type="text" placeholder="Enter Destination" />
+    <br><br>
+    <button onclick="calculateRoute()">Get Route</button>
+    <p id="output"></p>
+    <div id="map"></div>
+
+    <h3>Nearby Hospitals:</h3>
+    <ul id="hospital-list"></ul>
+
+    <script>
+      let map, directionsService, directionsRenderer, autocompleteSource, autocompleteDestination, routeSelect;
+      let service, userLocation;
+
+      function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 7,
+          center: { lat: 28.6139, lng: 77.2090 }, // Delhi (can be updated to a default location)
+        });
+        directionsService = new google.maps.DirectionsService();
+        directionsRenderer = new google.maps.DirectionsRenderer();
+        directionsRenderer.setMap(map);
+
+        autocompleteSource = new google.maps.places.Autocomplete(document.getElementById("source"));
+        autocompleteDestination = new google.maps.places.Autocomplete(document.getElementById("destination"));
+        
+        service = new google.maps.places.PlacesService(map); // Places service to search nearby places
+        routeSelect = document.createElement("select");
+        routeSelect.id = "routeSelect";
+        routeSelect.style.display = "none"; // Hide by default
+        document.body.appendChild(routeSelect);
+
+        // Get user's current location
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function (position) {
+            userLocation = new google.maps.LatLng(
+              position.coords.latitude,
+              position.coords.longitude
+            );
+            map.setCenter(userLocation); // Set map to user location
+          });
+        }
+      }
+
+      function calculateRoute() {
+        const source = document.getElementById("source").value;
+        const destination = document.getElementById("destination").value;
+
+        const request = {
+          origin: source,
+          destination: destination,
+          travelMode: google.maps.TravelMode.DRIVING,
+          provideRouteAlternatives: true,
+        };
+
+        directionsService.route(request, function (result, status) {
+          if (status == "OK") {
+            directionsRenderer.setDirections(result);
+            const routes = result.routes;
+            const output = document.getElementById("output");
+            const routeSelect = document.getElementById("routeSelect");
+
+            output.innerHTML = "";
+            routeSelect.innerHTML = "";
+            routeSelect.style.display = "block";
+
+            routes.forEach((route, index) => {
+              const option = document.createElement("option");
+              option.value = index;
+              option.textContent = `Route ${index + 1}: ${route.legs[0].distance.text}, ${route.legs[0].duration.text}`;
+              routeSelect.appendChild(option);
+            });
+
+            const shortestRoute = routes[0];
+            output.innerHTML = `Shortest Route: ${shortestRoute.legs[0].distance.text}, Duration: ${shortestRoute.legs[0].duration.text}`;
+          } else {
+            alert("Could not display directions: " + status);
+          }
+        });
+
+        // After calculating the route, search for nearby hospitals
+        searchNearbyHospitals();
+      }
+
+      function searchNearbyHospitals() {
+        if (userLocation) {
+          const request = {
+            location: userLocation,
+            radius: 5000, // Search within a 5km radius
+            type: ["hospital"],
+          };
+
+          service.nearbySearch(request, function (results, status) {
+            if (status === google.maps.places.PlacesServiceStatus.OK) {
+              const hospitalList = document.getElementById("hospital-list");
+              hospitalList.innerHTML = ""; // Clear previous hospital list
+
+              results.forEach(function (place) {
+                const listItem = document.createElement("li");
+                listItem.textContent = `${place.name} - ${place.vicinity}`;
+                hospitalList.appendChild(listItem);
+              });
+            } else {
+              alert("No nearby hospitals found.");
+            }
+          });
+        }
+      }
+
+      window.onload = initMap;
+      document.getElementById("routeSelect").addEventListener("change", selectRoute);
+
+      function selectRoute() {
+        const selectedRouteIndex = routeSelect.value;
+        const selectedRoute = result.routes[selectedRouteIndex];
+        directionsRenderer.setDirections({ routes: [selectedRoute] });
+      }
+    </script>
+  </body>
+</html>
+
